@@ -5,24 +5,15 @@ def is_safe(arr, part2=False):
     num_neg = sum(deltas<0)
     if num_neg >= 2:
         deltas *= -1
-    bools = (deltas>=1) & (deltas<=3)
     if not part2:
-        return bools.all()
+        return ((deltas>=1) & (deltas<=3)).all()
     else:
-        num_ok = sum(bools)
-        if num_ok == len(bools):
-            return True
-        if num_ok < len(bools)-2:
-            return False
-        for i, d in enumerate(deltas):
-            if not bools[i]:
-                #this is the only problematic delta
-                if i==0 or i==len(bools)-1:
-                    #failures at either end are fine
-                    return True
-                d_left = deltas[i]+deltas[i-1]
-                d_right = deltas[i]+deltas[i+1]
-                return 1<=d_left<=3 or 1<=d_right<=3
+        arr = list(arr)
+        for i in range(len(arr)):
+            if is_safe(arr[:i]+arr[i+1:]):
+                return True
+        return False
+
 
 def solve(fn, part2=False):
     num_safe = 0
