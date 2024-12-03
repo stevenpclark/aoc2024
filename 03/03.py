@@ -15,7 +15,7 @@ def score(s):
 def solve(fn, part2=False):
     total = 0
     with open(fn) as f:
-        s = ''.join(f.readlines())
+        s = f.read()
     if part2:
         while s:
             off_ind = s.find("don't()")
