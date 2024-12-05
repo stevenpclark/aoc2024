@@ -1,4 +1,3 @@
-from math import prod
 import numpy as np
 
 dirs = ((-1,-1),(-1,0),(-1,1),
