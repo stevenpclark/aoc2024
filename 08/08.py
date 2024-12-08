@@ -15,10 +15,9 @@ def solve(fn, part2=False):
         lines = f.read().splitlines()
 
     m = np.array([list(li) for li in lines], dtype=np.chararray)
-
+    unique_chars = np.unique(m)
     anti_loc_set = set()
 
-    unique_chars = np.unique(m)
     for ch in unique_chars:
         if ch == '.':
             continue
@@ -29,7 +28,7 @@ def solve(fn, part2=False):
                 add_if_on_grid(a+d, m, anti_loc_set)
                 add_if_on_grid(b-d, m, anti_loc_set)
             else:
-                d = d//gcd(*d)
+                #d = d//gcd(*d) #this line isn't necessary? huh?
                 p = np.copy(a)
                 while add_if_on_grid(p, m, anti_loc_set):
                     p += d
