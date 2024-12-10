@@ -2,7 +2,7 @@ import numpy as np
 
 dirs = [(1,0), (0,1), (-1,0), (0,-1)]
 
-def ascend(r, c, e, m, v):
+def ascend(r, c, e, m, v, part2):
     #position, elevation, map, visited
     #return number of 9s reachable from here
     if e == 9:
@@ -11,11 +11,10 @@ def ascend(r, c, e, m, v):
     for dr, dc in dirs:
         r2 = r+dr
         c2 = c+dc
-        if (v[r2, c2]==False) and (m[r2, c2] == e+1):
+        if (part2 or v[r2, c2]==False) and (m[r2, c2] == e+1):
             v[r2, c2] = True
-            total += ascend(r2, c2, e+1, m, v)
+            total += ascend(r2, c2, e+1, m, v, part2)
     return total
-
 
 def solve(fn, part2=False):
     with open(fn, 'r') as f:
@@ -29,13 +28,12 @@ def solve(fn, part2=False):
     for r,c in np.ndindex(nr, nc):
         if m[r,c] == 0:
             v = np.zeros(m.shape, dtype=bool)
-            total += ascend(r, c, 0, m, v)
+            total += ascend(r, c, 0, m, v, part2)
 
     return total
-
 
 if __name__ == '__main__':
     assert solve('test.txt') == 36
     print(solve('input.txt'))
     assert solve('test.txt', part2=True) == 81
-    #print(solve('input.txt', part2=True))
+    print(solve('input.txt', part2=True))
