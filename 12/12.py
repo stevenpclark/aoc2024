@@ -39,12 +39,9 @@ def solve(fn, part2=False):
 
     return total
 
-def main():
+if __name__ == '__main__':
     assert solve('test1.txt') == 140
     assert solve('test2.txt') == 1930
     print(solve('input.txt'))
-    #assert solve('test.txt', part2=True) == 34
+    assert solve('test2.txt', part2=True) == 1206
     #print(solve('input.txt', part2=True))
-
-if __name__ == '__main__':
-    main()
