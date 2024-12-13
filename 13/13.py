@@ -1,3 +1,4 @@
+import math
 from dataclasses import dataclass
 
 @dataclass
@@ -33,24 +34,45 @@ def solve(fn, part2=False):
     machines = list()
     for i in range(0, len(lines), 4):
         machines.append(parse_machine(lines[i:i+4]))
-    print(machines[1])
 
-    min_costs = list()
+    min_cost = 0
     for m in machines:
-        min_cost = 1e6
+        if part2:
+            m.px += 10000000000000
+            m.py += 10000000000000
 
-        for na in range(100):
-            for nb in range(100):
-                if (na*m.a.dx + nb*m.b.dx == m.px) and (na*m.a.dy + nb*m.b.dy == m.py):
-                    cost = 3*na + nb
-                    min_cost = min(cost, min_cost)
-        if min_cost != 1e6:
-            min_costs.append(min_cost)
+        #print(m)
+        na = 0
+        int1 = m.px/m.b.dx
+        int2 = m.py/m.b.dy
+        slope1 = -m.a.dx/m.b.dx
+        slope2 = -m.a.dy/m.b.dy
+        if int1 > int2:
+            top_int, bottom_int = int1, int2
+            top_slope, bottom_slope = slope1, slope2
+        else:
+            top_int, bottom_int = int2, int1
+            top_slope, bottom_slope = slope2, slope1
 
-    return sum(min_costs)
+        na = (bottom_int-top_int)/(top_slope-bottom_slope)
+        if abs(na-round(na)) > 1e-6:
+            continue
+        na = int(round(na))
+        nb = na*top_slope + top_int
+        if abs(nb-round(nb)) > 1e-6:
+            continue
+        nb = int(round(nb))
+        if na < 0 or nb < 0:
+            continue
+
+        #print(na, nb)
+        min_cost += 3*na + nb
+
+    return min_cost
 
 if __name__ == '__main__':
     assert solve('test.txt') == 480
     print(solve('input.txt'))
     #assert solve('test.txt', part2=True) == 1206
-    #print(solve('input.txt', part2=True))
+    #print(solve('test.txt', part2=True))
+    print(solve('input.txt', part2=True))
