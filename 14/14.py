@@ -51,6 +51,8 @@ def solve(fn, nx, ny, part2=False):
                 #look for sudden jump in num_neighbors
                 print(i+1, num_neighbors)
                 peak = num_neighbors
+                np.savetxt(f'vis.txt', m, fmt="%1d", delimiter='')
+
 
     quads = np.zeros((2,2), dtype=np.int32)
     for r in robots:
