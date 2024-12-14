@@ -36,13 +36,13 @@ def solve(fn, part2=False):
         machines.append(parse_machine(lines[i:i+4]))
 
     min_cost = 0
+    epsilon = 1e-6
     for m in machines:
         if part2:
             m.px += 10000000000000
             m.py += 10000000000000
 
         #print(m)
-        na = 0
         int1 = m.px/m.b.dx
         int2 = m.py/m.b.dy
         slope1 = -m.a.dx/m.b.dx
@@ -54,14 +54,23 @@ def solve(fn, part2=False):
             top_int, bottom_int = int2, int1
             top_slope, bottom_slope = slope2, slope1
 
+        #solve for num a presses
         na = (bottom_int-top_int)/(top_slope-bottom_slope)
-        if abs(na-round(na)) > 1e-6:
+
+        #verify na "is an int"
+        if abs(na-round(na)) > epsilon:
             continue
         na = int(round(na))
+
+        #solve for num b presses
         nb = na*top_slope + top_int
-        if abs(nb-round(nb)) > 1e-6:
+
+        #verify nb "is an int"
+        if abs(nb-round(nb)) > epsilon:
             continue
         nb = int(round(nb))
+
+        #verify na and nb are both positive
         if na < 0 or nb < 0:
             continue
 
