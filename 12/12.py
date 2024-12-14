@@ -8,27 +8,21 @@ class RegionTally:
     area: int
     edges: int
 
-def update_region_score_at(r, c, ch, m, v, edges, t, part2):
+def update_region_score_at(r, c, ch, m, v, edges, t, part2, v_list):
     #row, col, region-character, map, visited, edges, tally
     v[r,c] = True
+    v_list.append((r,c))
     t.area += 1
     for i, d in enumerate(dirs):
         dr, dc = d
         r2, c2 = r+dr, c+dc
         if m[r2,c2] != ch:
             edges[r, c, i] = 1
-        elif not v[r2, c2]:
-            update_region_score_at(r2, c2, ch, m, v, edges, t, part2)
-    for i in range(4):
-        if edges[r, c, i]:
             t.edges += 1
-            if part2:
-                dr, dc = dirs[(i+1)%2]
-                if edges[r+dr, c+dc, i]:
-                    t.edges -= 1
-                #dr, dc = dirs[(i+3)%4]
-                #if edges[r+dr, c+dc, i]:
-                    #t.edges -= 1
+        elif not v[r2, c2]:
+            update_region_score_at(r2, c2, ch, m, v, edges, t, part2, v_list)
+
+    return v_list
 
 
 def solve(fn, part2=False):
@@ -46,9 +40,15 @@ def solve(fn, part2=False):
         if not v[r,c]:
             edges = np.zeros((m.shape[0], m.shape[1], 4), dtype=np.uint8)
             tally = RegionTally(0,0)
-            update_region_score_at(r, c, m[r,c], m, v, edges, tally, part2)
-            if m[r,c] == 'E':
-                print(tally.area, tally.edges)
+            v_list = list()
+            v_list = update_region_score_at(r, c, m[r,c], m, v, edges, tally, part2, v_list)
+            if part2:
+                for r2, c2 in v_list:
+                    for i in range(4):
+                        if edges[r2, c2, i]:
+                            dr, dc = dirs[(i+1)%2]
+                            if edges[r2+dr, c2+dc, i]:
+                                tally.edges -= 1
             total += (tally.area*tally.edges)
 
     return total
@@ -58,4 +58,4 @@ if __name__ == '__main__':
     assert solve('test2.txt') == 1930
     print(solve('input.txt'))
     assert solve('test2.txt', part2=True) == 1206
-    #print(solve('input.txt', part2=True))
+    print(solve('input.txt', part2=True))
