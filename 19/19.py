@@ -1,6 +1,5 @@
 from functools import cache
 
-
 def solve(fn, part2=False):
     with open(fn, 'r') as f:
         lines = f.read().splitlines()
@@ -25,9 +24,8 @@ def solve(fn, part2=False):
     else:
         return sum(num_possible(target) for target in targets)
 
-
 if __name__ == '__main__':
     assert solve('test.txt') == 6
-    assert solve('test.txt', part2=True) == 16
     print(solve('input.txt'))
+    assert solve('test.txt', part2=True) == 16
     print(solve('input.txt', part2=True))
