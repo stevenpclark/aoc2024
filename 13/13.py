@@ -1,5 +1,5 @@
-import math
 from dataclasses import dataclass
+import numpy as np
 
 @dataclass
 class Button:
@@ -36,52 +36,35 @@ def solve(fn, part2=False):
         machines.append(parse_machine(lines[i:i+4]))
 
     min_cost = 0
-    epsilon = 1e-6
     for m in machines:
         if part2:
             m.px += 10000000000000
             m.py += 10000000000000
 
-        #print(m)
-        int1 = m.px/m.b.dx
-        int2 = m.py/m.b.dy
-        slope1 = -m.a.dx/m.b.dx
-        slope2 = -m.a.dy/m.b.dy
-        if int1 > int2:
-            top_int, bottom_int = int1, int2
-            top_slope, bottom_slope = slope1, slope2
-        else:
-            top_int, bottom_int = int2, int1
-            top_slope, bottom_slope = slope2, slope1
+        c = np.array([[m.a.dx, m.b.dx], [m.a.dy, m.b.dy]])
+        d = np.array([m.px, m.py])
 
-        #solve for num a presses
-        na = (bottom_int-top_int)/(top_slope-bottom_slope)
+        na, nb = np.linalg.solve(c,d)
 
-        #verify na "is an int"
-        if abs(na-round(na)) > epsilon:
-            continue
         na = int(round(na))
-
-        #solve for num b presses
-        nb = na*top_slope + top_int
-
-        #verify nb "is an int"
-        if abs(nb-round(nb)) > epsilon:
-            continue
         nb = int(round(nb))
 
-        #verify na and nb are both positive
-        if na < 0 or nb < 0:
+        if na<0 or nb<0:
+            continue
+
+        if na*m.a.dx + nb*m.b.dx != m.px:
+            continue
+
+        if na*m.a.dy + nb*m.b.dy != m.py:
             continue
 
         #print(na, nb)
         min_cost += 3*na + nb
 
+    print(min_cost)
     return min_cost
 
 if __name__ == '__main__':
     assert solve('test.txt') == 480
     print(solve('input.txt'))
-    #assert solve('test.txt', part2=True) == 1206
-    #print(solve('test.txt', part2=True))
     print(solve('input.txt', part2=True))
